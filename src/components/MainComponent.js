@@ -11,6 +11,7 @@ import About from './AboutComponent';
 import { COMMENTS } from '../shared/comments';
 import { PARTNERS } from '../shared/partners';
 import { PROMOTIONS } from '../shared/promotions';
+import { addComment } from '../redux/ActionCreators';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 const mapStateToProps = (state) => {
@@ -20,6 +21,10 @@ const mapStateToProps = (state) => {
     partners: state.partners,
     promotions: state.promotions,
   };
+};
+const mapDispatchToProps = {
+  addComment: (campsiteId, rating, author, text) =>
+    addComment(campsiteId, rating, author, text),
 };
 class Main extends Component {
   constructor(props) {
@@ -58,6 +63,7 @@ class Main extends Component {
           comments={this.props.comments.filter(
             (comment) => comment.campsiteId === +match.params.campsiteId
           )}
+          addComment={this.props.addComment}
         />
       );
     };
@@ -87,4 +93,4 @@ class Main extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps)(Main));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));
