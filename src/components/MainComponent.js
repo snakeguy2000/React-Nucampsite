@@ -1,25 +1,27 @@
 import React, { Component } from 'react';
-import { Navbar, NavbarBrand } from 'reactstrap';
 import Contact from './ContactComponent';
 import Directory from './DirectoryComponent';
 import CampsiteInfo from './CampsiteInfoComponent';
-import { CAMPSITES } from '../shared/campsites';
 import Header from './HeaderComponent';
 import Footer from './FooterComponent';
 import Home from './HomeComponent';
 import About from './AboutComponent';
-import { COMMENTS } from '../shared/comments';
-import { PARTNERS } from '../shared/partners';
-import { PROMOTIONS } from '../shared/promotions';
+
 import {
   postComment,
   fetchCampsites,
   fetchComments,
   fetchPromotions,
 } from '../redux/ActionCreators';
+
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+
 import { connect } from 'react-redux';
+
 import { actions } from 'react-redux-form';
+
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+
 const mapStateToProps = (state) => {
   return {
     campsites: state.campsites,
@@ -28,6 +30,7 @@ const mapStateToProps = (state) => {
     promotions: state.promotions,
   };
 };
+
 const mapDispatchToProps = {
   postComment: (campsiteId, rating, author, text) =>
     postComment(campsiteId, rating, author, text),
@@ -88,30 +91,39 @@ class Main extends Component {
 
     return (
       <div>
+        {' '}
         <Header />
-        <Switch>
-          <Route path="/home" component={HomePage} />
-          <Route
-            exact
-            path="/directory"
-            render={() => <Directory campsites={this.props.campsites} />}
-          />
-          <Route path="/directory/:campsiteId" component={CampsiteWithId} />
-          <Route
-            exact
-            path="/contactus"
-            render={() => (
-              <Contact resetFeedbackForm={this.props.resetFeedbackForm} />
-            )}
-          />
-          <Route
-            exact
-            path="/aboutus"
-            render={() => <About partners={this.props.partners} />}
-          />
-          <Redirect to="/home" />
-        </Switch>
-        <Footer />
+        <TransitionGroup>
+          <CSSTransition
+            key={this.props.location.key}
+            classNames="page"
+            timeout={300}
+          >
+            <Switch>
+              <Route path="/home" component={HomePage} />
+              <Route
+                exact
+                path="/directory"
+                render={() => <Directory campsites={this.props.campsites} />}
+              />
+              <Route path="/directory/:campsiteId" component={CampsiteWithId} />
+              <Route
+                exact
+                path="/contactus"
+                render={() => (
+                  <Contact resetFeedbackForm={this.props.resetFeedbackForm} />
+                )}
+              />
+              <Route
+                exact
+                path="/aboutus"
+                render={() => <About partners={this.props.partners} />}
+              />
+              <Redirect to="/home" />
+            </Switch>
+          </CSSTransition>
+        </TransitionGroup>
+        <Footer />{' '}
       </div>
     );
   }
